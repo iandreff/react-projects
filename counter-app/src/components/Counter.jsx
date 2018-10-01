@@ -12,6 +12,7 @@ class Counter extends Component {
   };
 
   render() {
+    // This is a test to check a new branch home
     return (
       <div>
         <h4>
