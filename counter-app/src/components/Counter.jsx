@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 class Counter extends Component {
   render() {
-    // This is a test to check a new branch home
     return (
       <div>
         <span style={{ fontSize: 15 }} className={this.getBadgeClasses()}>
