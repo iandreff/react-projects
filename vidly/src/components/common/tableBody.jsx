@@ -4,10 +4,9 @@ import _ from "lodash";
 class TableBody extends Component {
   renderCell = (item, column) => {
     if (column.content) {
-      console.log(column.content(item));
       return column.content(item);
     }
-    console.log(_.get(item, column.path));
+
     return _.get(item, column.path);
   };
 
