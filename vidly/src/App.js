@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import Movies from "./components/movies";
-import "./App.css";
+import LoginForm from "./components/loginForm";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/notFound";
 import NavBar from "./components/navBar";
 import MovieForm from "./components/movieForm";
+import "./App.css";
 
 class App extends Component {
   render() {
@@ -16,6 +17,8 @@ class App extends Component {
         <main className="container">
           {/* we need to wrap all Route with <switch> 'cause path "/" match with all url*/}
           <Switch>
+            
+            <Route path="/loginForm" component={LoginForm} />
             <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={Movies} />
             <Route path="/customers" component={Customers} />
