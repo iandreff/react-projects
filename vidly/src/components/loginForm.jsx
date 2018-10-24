@@ -1,47 +1,76 @@
 import React, { Component } from "react";
+import Joi from "joi-browser";
 import Input from "./common/input";
 
 class LoginForm extends Component {
   state = {
     account: { username: "", password: "" },
-    errors: {}
+    errors: { username: "", password: "" }
   };
   // username = React.createRef();
   // WE DO NOT USE REF HERE BECAUSE WE WILL USE CONTROLED COMP
 
-  validate = () => {
-    const errors = {};
-    const { account } = this.state;
-    if (account.username.trim() === "")
-      errors.username = "Username is required.";
-    if (account.password.trim() === "")
-      errors.password = "Password is required.";
+  schema = {
+    username: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30)
+      .required()
+      .label("Username"),
+    password: Joi.string()
+      .regex(/^[a-zA-Z0-9]{3,30}$/)
+      .label("Password")
+  };
 
-    return Object.keys(errors).length === 0 ? null : errors;
+  validate = () => {
+    const option = { abortEarly: false };
+    const result = Joi.validate(this.state.account, this.schema, option);
+
+    if (!result.error) return null;
+
+    const errors = {};
+    for (let item of result.error.details) {
+      errors[item.path[0]] = item.message;
+    }
+    console.log(result);
+
+    return errors;
   };
 
   handlerSubmit = e => {
     e.preventDefault();
     /* const username = this.username.current.value; */
     const errors = this.validate();
-    console.log(errors);
-    this.setState({ errors });
+    this.setState({ errors: errors || {} }); //if errors is truthy then errors otherwise empty object {}
     if (errors) return;
     console.log("Submitted");
   };
 
+  validateProperty = ({ name, value }) => {
+    const obj = { [name]: value };
+    const schema = { [name]: this.schema[name] };
+    const { error } = Joi.validate(obj, schema);
+
+    return error ? error.details[0].message : null;
+  };
+
   handleChange = ({ currentTarget: input }) => {
     //we destructuring argument e and use {currentTarget and renane as input}
+    const errors = { ...this.state.errors };
+    const errorMessage = this.validateProperty(input);
+    if (errorMessage) errors[input.name] = errorMessage;
+    else delete errors[input.name];
+
     const account = { ...this.state.account };
     account[input.name] = input.value;
-    this.setState({ account: account });
+    this.setState({ account: account, errors: errors });
     {
       /*we can use also this.setState({account}); */
     }
   };
 
   render() {
-    const { account } = this.state;
+    const { account, errors } = this.state;
     return (
       <div>
         <h1>Login</h1>
@@ -52,12 +81,14 @@ class LoginForm extends Component {
             name="username"
             label="Username"
             onChange={this.handleChange}
+            error={errors.username}
           />
           <Input
             value={account.password}
             name="password"
             onChange={this.handleChange}
             label="Password"
+            error={errors.password}
           />
           <button className="btn btn-primary">Login</button>
         </form>
