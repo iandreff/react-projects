@@ -2,24 +2,25 @@ import React, { Component } from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
 
-class LoginForm extends Form {
+class RegisterForm extends Form {
   state = {
-    data: { username: "", password: "" },
-    errors: { username: "", password: "" }
+    data: { username: "", password: "", name: "" },
+    errors: { username: "", password: "", name: "" }
   };
-  // username = React.createRef();
-  // WE DO NOT USE REF HERE BECAUSE WE WILL USE CONTROLED COMP
 
   schema = {
     username: Joi.string()
-      .alphanum()
+      .email({ minDomainAtoms: 2 })
       .min(3)
-      .max(30)
+      .max(20)
       .required()
       .label("Username"),
     password: Joi.string()
-      .regex(/^[a-zA-Z0-9]{3,30}$/)
-      .label("Password")
+      .regex(/^[a-zA-Z0-9]{5,30}$/)
+      .label("Password"),
+    name: Joi.string()
+      .regex(/^[a-zA-Z]{3,30}$/)
+      .label("Name")
   };
 
   doSubmit = () => {
@@ -37,16 +38,17 @@ class LoginForm extends Form {
   render() {
     return (
       <div>
-        <h1>Login</h1>
+        <h1>Register</h1>
         <form onSubmit={this.handlerSubmit}>
           {/*  add id to Input, same value in id is set in htmlFor */}
           {this.renderInput("username", "Username")}
           {this.renderInput("password", "Password", "password")}
-          {this.renderButton("Login")}
+          {this.renderInput("name", "Name")}
+          {this.renderButton("Register")}
         </form>
       </div>
     );
   }
 }
 
-export default LoginForm;
+export default RegisterForm;
