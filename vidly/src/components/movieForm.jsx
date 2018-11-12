@@ -34,7 +34,7 @@ class MovieForm extends Form {
       .required()
       .min(0)
       .max(100)
-      .label("Number in Stock")
+      .label("Daily Rental Rate")
   };
 
   componentDidMount() {
@@ -75,6 +75,10 @@ class MovieForm extends Form {
         <h1>Movie Form</h1>
         <form onSubmit={this.handlerSubmit}>
           {this.renderInput("title", "Title")}
+
+          {this.renderInput("numberInStock", "Number in Stock", "number")}
+          {this.renderInput("dailyRentalRate", "Daily Rental Rate")}
+          {this.renderButton("Save")}
         </form>
       </div>
     );
