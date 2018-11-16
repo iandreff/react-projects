@@ -18,7 +18,7 @@ class MovieForm extends Form {
   };
 
   schema = {
-    _id: Joi.string(),
+    _id: Joi.string().allow(""),
     title: Joi.string()
       .required()
       .label("Title"),
@@ -53,7 +53,14 @@ class MovieForm extends Form {
     this.setState({ data: this.mapToViewModel(movie) });
   }
 
-  mapToViewModel(movie) {
+  validateProperty = ({ name, value }) => {
+    const obj = { [name]: value };
+    const schema = { [name]: this.schema[name] };
+    const { error } = Joi.validate(obj, schema);
+    return error ? error.details[0].message : null;
+  };
+
+  mapToViewModel = movie => {
     return {
       _id: movie._id,
       title: movie.title,
@@ -61,11 +68,10 @@ class MovieForm extends Form {
       numberInStock: movie.numberInStock,
       dailyRentalRate: movie.dailyRentalRate
     };
-  }
+  };
 
   doSubmit = () => {
     saveMovie(this.state.data);
-
     this.props.history.push("/movies");
   };
 
@@ -75,7 +81,7 @@ class MovieForm extends Form {
         <h1>Movie Form</h1>
         <form onSubmit={this.handlerSubmit}>
           {this.renderInput("title", "Title")}
-
+          {this.renderSelect("genreId", "Genre", this.state.genres)}
           {this.renderInput("numberInStock", "Number in Stock", "number")}
           {this.renderInput("dailyRentalRate", "Daily Rental Rate")}
           {this.renderButton("Save")}
